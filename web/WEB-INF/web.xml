@@ -5,4 +5,12 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
            version="2.5">
 
+    <servlet>
+        <servlet-name>LibraryController</servlet-name>
+        <servlet-class>by.htp4.bitreight.library.LibraryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LibraryController</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 </web-app>
