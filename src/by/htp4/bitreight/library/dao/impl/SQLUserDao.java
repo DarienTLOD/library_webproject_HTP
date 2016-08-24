@@ -10,7 +10,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
 public class SQLUserDao implements UserDao {
 
     private final String getBooksBaseSql = "SELECT books.id, books.title, books.author, " +
@@ -92,15 +91,44 @@ public class SQLUserDao implements UserDao {
 //        }
 //    }
 
+//    @Override
+//    public List<Book> getBooksAndSortBy(SortType sortType) throws DAOException {
+//        Connection connection = null;
+//        String sql = null;
+//
+//        if(sortType != SortType.NONE) {
+//            sql = getBooksBaseSql + " ORDER BY " + sortType.toString().replace("_", " ");
+//        } else {
+//            sql = getBooksBaseSql;
+//        }
+//
+//        try {
+//            connection = getConnection();
+//            Statement statement = connection.createStatement();
+//            ResultSet resultSet = statement.executeQuery(sql);
+//            return extractBooks(resultSet);
+//        } catch (SQLException e) {
+//            throw new DAOException(e.getMessage());
+//        } finally {
+//            closeConnection(connection);  //??
+//        }
+//    }
+
     @Override
-    public List<Book> getBooksAndSortBy(SortType sortType) throws DAOException {
+    public List<Book> getBooksOfCategoryAndSortBy(BookCategory bookCategory,
+                                                  SortType sortType) throws DAOException {
         Connection connection = null;
         String sql = null;
 
-        if(sortType != SortType.NONE) {
-            sql = getBooksBaseSql + " ORDER BY " + sortType.toString().replace("_", " ");
+        if(bookCategory != BookCategory.ALL) {
+            sql = "SELECT * FROM (" + getBooksBaseSql + ") t " +
+                    " WHERE t.category_name = " + "'" + bookCategory.toString().toLowerCase() + "' ";
         } else {
             sql = getBooksBaseSql;
+        }
+
+        if(sortType != SortType.NONE) {
+            sql += " ORDER BY " + sortType.toString().replace("_", " ");
         }
 
         try {
@@ -111,7 +139,7 @@ public class SQLUserDao implements UserDao {
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
         } finally {
-            closeConnection(connection);  //??
+            closeConnection(connection); //??
         }
     }
 
@@ -136,30 +164,6 @@ public class SQLUserDao implements UserDao {
             throw new DAOException(e.getMessage());
         } finally {
             closeConnection(connection);  //??
-        }
-    }
-
-    //maybe should be combined with getBooksAndSortBy() method
-    @Override
-    public List<Book> getBooksOfCategoryAndSortBy(BookCategory bookCategory,
-                                                  SortType sortType) throws DAOException {
-        Connection connection = null;
-        String sql = "SELECT * FROM (" +getBooksBaseSql + ") t " +
-                        " WHERE t.category_name = " + "'" + bookCategory.toString().toLowerCase() + "' ";
-
-        if(sortType != SortType.NONE) {
-            sql += "ORDER BY " + sortType.toString().replace("_", " ");
-        }
-
-        try {
-            connection = getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            return extractBooks(resultSet);
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage());
-        } finally {
-            closeConnection(connection);
         }
     }
 
