@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("Duplicates")
 public class SQLUserDao implements UserDao {
 
     private final String getBooksBaseSql = "SELECT books.id, books.title, books.author, " +
@@ -144,7 +145,8 @@ public class SQLUserDao implements UserDao {
     }
 
     @Override
-    public List<Book> getBooksBySearchAndSortBy(String searchString, SortType sortType) throws DAOException {
+    public List<Book> getBooksBySearchAndSortBy(String searchString,
+                                                SortType sortType) throws DAOException {
         Connection connection = null;
         String sql = null;
 
@@ -168,12 +170,85 @@ public class SQLUserDao implements UserDao {
     }
 
     @Override
-    public boolean orderBook(int userId, int bookId) {
-        return false;
+    public boolean orderBook(int userId, int bookId) throws DAOException {
+        Connection connection = null;
+
+        final String decrementBooksCountSql = "UPDATE books SET count = count - 1 WHERE id = ?;";
+
+        final String insertNewOrderSql = "INSERT INTO orders(users_id, books_id) VALUES(?,?);";
+
+        try {
+            connection = getConnection();
+
+            //disable autocommit to start new transaction
+            connection.setAutoCommit(false);
+
+            PreparedStatement prepStatementUpdate = connection.prepareStatement(decrementBooksCountSql);
+            prepStatementUpdate.setInt(1, bookId);
+            prepStatementUpdate.executeUpdate();
+
+            PreparedStatement prepStatementInsert = connection.prepareStatement(insertNewOrderSql);
+            prepStatementInsert.setInt(1, userId);
+            prepStatementInsert.setInt(2, bookId);
+            prepStatementInsert.executeUpdate();
+
+            //if everything is OK, commit transaction
+            connection.commit();
+
+        } catch (SQLException ex1) {
+            //if there is any error, rollback transaction
+            try {
+                connection.rollback();
+            } catch (SQLException ex2) {
+                throw new DAOException(ex2.getMessage());
+            }
+            throw new DAOException(ex1.getErrorCode() + "");
+
+        } finally {
+            closeConnection(connection);
+        }
+
+        return true;
     }
 
     @Override
-    public boolean returnBook(int userId, int bookId) {
-        return false;
+    public boolean returnBook(int userId, int bookId) throws DAOException {
+        Connection connection = null;
+
+        final String incrementBooksCountSql = "UPDATE books SET count = count + 1 WHERE id = ?;";
+
+        final String deleteOrderSql = "DELETE FROM orders WHERE users_id = ? AND books_id = ?;";
+
+        try {
+            connection = getConnection();
+
+            //disable autocommit to start new transaction
+            connection.setAutoCommit(false);
+
+            PreparedStatement prepStatementUpdate = connection.prepareStatement(incrementBooksCountSql);
+            prepStatementUpdate.setInt(1, bookId);
+            prepStatementUpdate.executeUpdate();
+
+            PreparedStatement prepStatementDelete = connection.prepareStatement(deleteOrderSql);
+            prepStatementDelete.setInt(1, userId);
+            prepStatementDelete.setInt(2, bookId);
+            prepStatementDelete.executeUpdate();
+
+            //if everything is OK, commit transaction
+            connection.commit();
+        } catch (SQLException ex1) {
+            //if there is any error, rollback transaction
+            try {
+                connection.rollback();
+            } catch (SQLException ex2) {
+                throw new DAOException(ex2.getMessage());
+            }
+            throw new DAOException(ex1.getErrorCode() + "");
+
+        } finally {
+            closeConnection(connection);
+        }
+
+        return true;
     }
 }
