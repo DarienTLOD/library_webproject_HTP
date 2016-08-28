@@ -41,13 +41,14 @@ public class SQLBookDao implements BookDao {
         return connection;
     }
 
-    private void closeConnection(Connection connection) throws DAOException {
+    private void closeConnection(Connection connection) {
         try {
             if(connection != null) {
                 connection.close();
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage());
+            //throw new DAOException(e.getMessage());
+            //logging
         }
     }
 
@@ -79,6 +80,11 @@ public class SQLBookDao implements BookDao {
     @Override
     public boolean addBook(Book book) throws DAOException {
         return false;
+    }
+
+    @Override
+    public Book getBookById(int bookId) throws DAOException {
+        return null;
     }
 
     @Override
@@ -199,7 +205,7 @@ public class SQLBookDao implements BookDao {
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
         } finally {
-            closeConnection(connection); //??
+            closeConnection(connection);
         }
     }
 
@@ -224,7 +230,7 @@ public class SQLBookDao implements BookDao {
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
         } finally {
-            closeConnection(connection);  //??
+            closeConnection(connection);
         }
     }
 }

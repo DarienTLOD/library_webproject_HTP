@@ -21,13 +21,14 @@ public class SQLUserDao implements UserDao {
         return connection;
     }
 
-    private void closeConnection(Connection connection) throws DAOException {
+    private void closeConnection(Connection connection) {
         try {
             if(connection != null) {
                 connection.close();
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getMessage());
+            //throw new DAOException(e.getMessage());
+            //logging
         }
     }
 
