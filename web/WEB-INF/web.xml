@@ -7,10 +7,23 @@
 
     <servlet>
         <servlet-name>LibraryController</servlet-name>
-        <servlet-class>by.htp4.bitreight.library.LibraryController</servlet-class>
+        <servlet-class>by.htp4.bitreight.library.controller.LibraryController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LibraryController</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/catalog</url-pattern>
+        <url-pattern>/catalog/</url-pattern>
+        <url-pattern>/catalog/search</url-pattern>
+        <url-pattern>/catalog/search/</url-pattern>
+        <!--<url-pattern>/logination</url-pattern>-->
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LoginPage</servlet-name>
+        <jsp-file>/WEB-INF/jsp/login.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginPage</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
 </web-app>
