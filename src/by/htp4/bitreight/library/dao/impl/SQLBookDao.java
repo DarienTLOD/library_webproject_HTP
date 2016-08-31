@@ -1,9 +1,9 @@
 package by.htp4.bitreight.library.dao.impl;
 
 import by.htp4.bitreight.library.bean.Book;
-import by.htp4.bitreight.library.dao.BookCategory;
+import by.htp4.bitreight.library.service.BookCategory;
 import by.htp4.bitreight.library.dao.BookDao;
-import by.htp4.bitreight.library.dao.SortType;
+import by.htp4.bitreight.library.service.SortType;
 import by.htp4.bitreight.library.dao.exception.DAOException;
 
 import java.sql.*;

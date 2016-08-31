@@ -2,6 +2,8 @@ package by.htp4.bitreight.library.dao;
 
 import by.htp4.bitreight.library.bean.Book;
 import by.htp4.bitreight.library.dao.exception.DAOException;
+import by.htp4.bitreight.library.service.BookCategory;
+import by.htp4.bitreight.library.service.SortType;
 
 import java.util.List;
 
