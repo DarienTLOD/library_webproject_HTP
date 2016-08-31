@@ -3,6 +3,7 @@
 /web/image/
 /node_modules/
 /bower_components/
+/html_templates/
 /web/css/vendor/
 /web/js/vendor/
 /web/css/fonts/
