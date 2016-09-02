@@ -2,18 +2,16 @@ package by.htp4.bitreight.library.dao;
 
 import by.htp4.bitreight.library.bean.Book;
 import by.htp4.bitreight.library.dao.exception.DAOException;
-import by.htp4.bitreight.library.service.BookCategory;
-import by.htp4.bitreight.library.service.SortType;
 
 import java.util.List;
 
-public interface BookDao {
-    boolean addBook(Book book) throws DAOException;
-    Book getBookById(int bookId) throws DAOException;
-    boolean editBook(Book book) throws DAOException;
-    boolean deleteBook(int bookId) throws DAOException;
-    boolean addBookOrder(int userId, int bookId) throws DAOException;
-    boolean removeBookOrder(int userId, int bookId) throws DAOException;
-    List<Book> getBooksBySearchAndSortBy(String searchString, SortType sortType) throws DAOException;
-    List<Book> getBooksOfCategoryAndSortBy(BookCategory bookCategory, SortType sortType) throws DAOException;
+public interface BookDAO {
+    boolean create(Book book) throws DAOException;
+    Book findBookById(int bookId) throws DAOException;
+    boolean update(Book book) throws DAOException;
+    boolean delete(int bookId) throws DAOException;
+    List<String> findBookCategories() throws DAOException;
+    List<Book> findBooksBySearchAndOrderBy(String searchString, String columnName) throws DAOException;
+    List<Book> findBooksByCategoryAndOrderBy(String bookCategory, String orderByColumnName,
+                                                                  boolean ascending) throws DAOException;
 }
