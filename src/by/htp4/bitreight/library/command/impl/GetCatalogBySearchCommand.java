@@ -12,19 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class GetCatalogCommand implements Command {
+public class GetCatalogBySearchCommand implements Command {
 
-    private static final String PARAM_NAME_CATEGORY = "c";
+    private final static String PARAM_NAME_SEARCH_QUERY = "q";
     private static final String PARAM_NAME_SORT = "s";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) {
-
-        String category = request.getParameter(PARAM_NAME_CATEGORY);
+        String searchQuery = request.getParameter(PARAM_NAME_SEARCH_QUERY);
         String sortType = request.getParameter(PARAM_NAME_SORT);
-
-        //System.out.println(category);
-        //System.out.println(sortType);
 
         ServiceFactory serviceFactory = ServiceFactory.getInstance();
         LibraryService libraryService = serviceFactory.getLibraryService();
@@ -32,9 +28,9 @@ public class GetCatalogCommand implements Command {
         List<Book> books = null;
 
         try {
-            books = libraryService.getBooksOfCategoryAndSortBy(category, sortType);
+            books = libraryService.searchForBooksAndSortBy(searchQuery, sortType);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            //error message - "No search results!"
         }
 
         request.setAttribute("bookList", books);
@@ -45,6 +41,5 @@ public class GetCatalogCommand implements Command {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

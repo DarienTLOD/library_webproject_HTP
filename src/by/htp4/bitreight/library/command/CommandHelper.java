@@ -1,5 +1,6 @@
 package by.htp4.bitreight.library.command;
 
+import by.htp4.bitreight.library.command.impl.GetCatalogBySearchCommand;
 import by.htp4.bitreight.library.command.impl.GetCatalogCommand;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class CommandHelper {
 //        commands.put(CommandName.LOGIN, new GetCatalogCommand());
 //        commands.put(CommandName.LOGOUT, new GetCatalogCommand());
         commands.put(CommandName.CATALOG, new GetCatalogCommand());
-        commands.put(CommandName.CATALOG_SEARCH, new GetCatalogCommand());
+        commands.put(CommandName.CATALOG_SEARCH, new GetCatalogBySearchCommand());
     }
 
     public static CommandHelper getInstance() {
