@@ -1,26 +1,26 @@
 package by.htp4.bitreight.library.dao;
 
-import by.htp4.bitreight.library.dao.impl.SQLBookDao;
-import by.htp4.bitreight.library.dao.impl.SQLUserDao;
+import by.htp4.bitreight.library.dao.impl.SQLBookDAO;
+import by.htp4.bitreight.library.dao.impl.SQLUserDAO;
 
-public class DaoFactory {
+public class DAOFactory {
 
-    private static final DaoFactory instance = new DaoFactory();
+    private static final DAOFactory instance = new DAOFactory();
 
-    private UserDao userDao = new SQLUserDao();
-    private BookDao bookDao = new SQLBookDao();
+    private UserDAO userDAO = new SQLUserDAO();
+    private BookDAO bookDAO = new SQLBookDAO();
 
-    private DaoFactory() {}
+    private DAOFactory() {}
 
-    public static DaoFactory getInstance() {
+    public static DAOFactory getInstance() {
         return instance;
     }
 
-    public UserDao getUserDao() {
-        return userDao;
+    public UserDAO getUserDAO() {
+        return userDAO;
     }
 
-    public BookDao getBookDao() {
-        return bookDao;
+    public BookDAO getBookDAO() {
+        return bookDAO;
     }
 }
