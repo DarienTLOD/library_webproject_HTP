@@ -20,20 +20,12 @@ public class SQLBookDAO implements BookDAO {
     private static final String COLUMN_NAME_COUNT = "count";
     private static final String COLUMN_NAME_CATEGORY = "category_name";
 
-//    private static final String FIND_BOOKS_SQL = "SELECT books.id, books.title, books.author, " +
-//                                            "books.description, books.year, " +
-//                                            "books.price, books.isbn, books.count, " +
-//                                            "book_categories.name as category_name " +
-//                                            "FROM books JOIN book_categories " +
-//                                            "ON books.book_categories_id = book_categories.id";
-//
-//    private static final String FIND_BOOKS_BY_SEARCH_SQL = "SELECT books.id, books.title, books.author, " +
-//                                                    "books.description, books.year, " +
-//                                                    "books.price, books.isbn, books.count, " +
-//                                                    "book_categories.name as category_name " +
-//                                                    "FROM books JOIN book_categories " +
-//                                                    "ON books.book_categories_id = book_categories.id " +
-//                                                    "WHERE MATCH(author, title, description) AGAINST(?)";
+    private static final String FIND_BOOKS_SQL = "SELECT books.id, books.title, books.author, " +
+                                                 "books.description, books.year, " +
+                                                 "books.price, books.isbn, books.count, " +
+                                                 "book_categories.name as category_name " +
+                                                 "FROM books JOIN book_categories " +
+                                                 "ON books.book_categories_id = book_categories.id";
 
     private Connection getConnection() throws DAOException {
         Connection connection = null;
@@ -64,24 +56,56 @@ public class SQLBookDAO implements BookDAO {
 
         try {
             while(rs.next()) {
-                Book book = new Book();
-                book.setId(rs.getInt(COLUMN_NAME_ID));
-                book.setTitle(rs.getString(COLUMN_NAME_TITLE));
-                book.setAuthor(rs.getString(COLUMN_NAME_AUTHOR));
-                book.setDescription(rs.getString(COLUMN_NAME_DESCRIPTION));
-                book.setYear(rs.getInt(COLUMN_NAME_YEAR));
-                book.setPrice(rs.getInt(COLUMN_NAME_PRICE));
-                book.setIsbn(rs.getString(COLUMN_NAME_ISBN));
-                book.setCount(rs.getInt(COLUMN_NAME_COUNT));
-                book.setCategory(rs.getString(COLUMN_NAME_CATEGORY));
-
-                books.add(book);
+                books.add(getBookData(rs));
             }
+
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
         }
 
         return books;
+    }
+
+    private Book getBookData(ResultSet rs) throws DAOException {
+        Book book = new Book();
+
+        try {
+            book.setId(rs.getInt(COLUMN_NAME_ID));
+            book.setTitle(rs.getString(COLUMN_NAME_TITLE));
+            book.setAuthor(rs.getString(COLUMN_NAME_AUTHOR));
+            book.setDescription(rs.getString(COLUMN_NAME_DESCRIPTION));
+            book.setYear(rs.getInt(COLUMN_NAME_YEAR));
+            book.setPrice(rs.getInt(COLUMN_NAME_PRICE));
+            book.setIsbn(rs.getString(COLUMN_NAME_ISBN));
+            book.setCount(rs.getInt(COLUMN_NAME_COUNT));
+            book.setCategory(rs.getString(COLUMN_NAME_CATEGORY));
+
+        } catch (SQLException e) {
+            throw new DAOException(e.getMessage());
+        }
+
+        return book;
+    }
+
+    private String constructOrderByClause(String columnName, boolean ascending) {
+        StringBuilder sql = new StringBuilder(" ORDER BY ");
+
+        switch(columnName) {
+            case COLUMN_NAME_PRICE:
+                sql.append(COLUMN_NAME_PRICE);
+                break;
+            case COLUMN_NAME_YEAR:
+                sql.append(COLUMN_NAME_YEAR);
+                break;
+        }
+
+        if(ascending) {
+            sql.append(" ASC");
+        } else {
+            sql.append(" DESC");
+        }
+
+        return sql.toString();
     }
 
     @Override
@@ -90,7 +114,7 @@ public class SQLBookDAO implements BookDAO {
         PreparedStatement prepStatement = null;
 
         String sql = "INSERT INTO books (title, author, description, year, price, isbn, count, book_categories_id) " +
-                        "VALUES (?,?,?,?,?,?,?,?);";
+                        "VALUES (?,?,?,?,?,?,?,(SELECT id FROM book_categories WHERE name = ?));";
         try {
             connection = getConnection();
 
@@ -108,7 +132,7 @@ public class SQLBookDAO implements BookDAO {
             prepStatement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace();//invalid category
         }
 
         return true;
@@ -116,17 +140,81 @@ public class SQLBookDAO implements BookDAO {
 
     @Override
     public Book findBookById(int bookId) throws DAOException {
-        return null;
+        Book book = null;
+
+        Connection connection = null;
+        PreparedStatement prepStatement = null;
+
+        String sql = FIND_BOOKS_SQL + " WHERE books.id = ?";
+
+        try {
+            connection = getConnection();
+
+            prepStatement = connection.prepareStatement(sql);
+            prepStatement.setInt(1, bookId);
+
+            ResultSet resultSet = prepStatement.executeQuery();
+            resultSet.next();
+
+            return getBookData(resultSet);
+
+        } catch (SQLException e) {
+            throw new DAOException(e.getMessage());
+        }
     }
 
     @Override
     public boolean update(Book book) throws DAOException {
-        return false;
+        Connection connection = null;
+        PreparedStatement prepStatement = null;
+
+        String sql = "UPDATE books SET title = ?, author = ?, description = ?, year = ?, price = ?, isbn = ?, " +
+                     "count = ?, book_categories_id = (SELECT id FROM book_categories WHERE name = ?) " +
+                     "WHERE id = ?";
+
+        try {
+            connection = getConnection();
+
+            prepStatement = connection.prepareStatement(sql);
+
+            prepStatement.setString(1, book.getTitle());
+            prepStatement.setString(2, book.getAuthor());
+            prepStatement.setString(3, book.getDescription());
+            prepStatement.setInt(4, book.getYear());
+            prepStatement.setInt(5, book.getPrice());
+            prepStatement.setString(6, book.getIsbn());
+            prepStatement.setInt(7, book.getCount());
+            prepStatement.setString(8, book.getCategory());
+            prepStatement.setInt(9, book.getId());
+
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException(e.getMessage());
+        }
+        return true;
     }
 
     @Override
     public boolean delete(int bookId) throws DAOException {
-        return false;
+        Connection connection = null;
+        PreparedStatement prepStatement = null;
+
+        String sql = "DELETE FROM books WHERE id = ?";
+
+        try {
+            connection = getConnection();
+
+            prepStatement = connection.prepareStatement(sql);
+            prepStatement.setInt(1, bookId);
+
+            prepStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DAOException(e.getMessage());
+        }
+
+        return true;
     }
 
     @Override
@@ -155,43 +243,24 @@ public class SQLBookDAO implements BookDAO {
 
     @Override
     public List<Book> findBooksByCategoryAndOrderBy(String bookCategory,
-                                                   String orderByColumnName,
-                                                   boolean ascending) throws DAOException {
+                                                    String orderByColumnName,
+                                                    boolean ascending) throws DAOException {
         Connection connection = null;
         PreparedStatement prepStatement = null;
 
         StringBuilder sqlBuilder =
-                new StringBuilder("SELECT books.id, books.title, books.author, " +
-                                    "books.description, books.year, " +
-                                    "books.price, books.isbn, books.count, " +
-                                    "book_categories.name as category_name " +
-                                    "FROM books JOIN book_categories " +
-                                    "ON books.book_categories_id = book_categories.id");
+                new StringBuilder(FIND_BOOKS_SQL);
+
+        if(bookCategory != null) {
+            sqlBuilder.insert(0, "SELECT * FROM (")
+                      .append(") temp WHERE temp.category_name = ?");
+        }
+
+        if(orderByColumnName != null) {
+            sqlBuilder.append(constructOrderByClause(orderByColumnName, ascending));
+        }
+
         try {
-            if(bookCategory != null) {
-                sqlBuilder.insert(0, "SELECT * FROM (")
-                          .append(") temp WHERE temp.category_name = ?");
-            }
-
-            if(orderByColumnName != null) {
-                sqlBuilder.append(" ORDER BY ");
-
-                switch(orderByColumnName) {
-                    case COLUMN_NAME_PRICE:
-                        sqlBuilder.append(COLUMN_NAME_PRICE);
-                        break;
-                    case COLUMN_NAME_YEAR:
-                        sqlBuilder.append(COLUMN_NAME_YEAR);
-                        break;
-                }
-
-                if(ascending) {
-                    sqlBuilder.append(" ASC");
-                } else {
-                    sqlBuilder.append(" DESC");
-                }
-            }
-
             connection = getConnection();
 
             prepStatement = connection.prepareStatement(sqlBuilder.toString());
@@ -212,41 +281,38 @@ public class SQLBookDAO implements BookDAO {
 
     @Override
     public List<Book> findBooksBySearchAndOrderBy(String searchString,
-                                                String orderByColumnName) throws DAOException {
-//        Connection connection = null;
-//        PreparedStatement prepStatement = null;
-//
-//        final String findBooksBySearchSql = "SELECT books.id, books.title, books.author, " +
-//                                            "books.description, books.year, " +
-//                                            "books.price, books.isbn, books.count, " +
-//                                            "book_categories.name as category_name " +
-//                                            "FROM books JOIN book_categories " +
-//                                            "ON books.book_categories_id = book_categories.id " +
-//                                            "WHERE MATCH(author, title, description) AGAINST(?)";
-//
-//        try {
-//            connection = getConnection();
-//
-//            if(orderByColumnName == null) {
-//                prepStatement = connection.prepareStatement(findBooksBySearchSql);
-//                prepStatement.setString(1, searchString);
-//
-//            } else {
-//                String sql = findBooksBySearchSql + " ORDER BY ?";
-//
-//                prepStatement = connection.prepareStatement(findBooksBySearchSql);
-//                prepStatement.setString(1, searchString);
-//                prepStatement.setString(2, orderByColumnName);
-//            }
-//
-//            ResultSet resultSet = prepStatement.executeQuery();
-//            return extractBooks(resultSet);
-//
-//        } catch (SQLException e) {
-//            throw new DAOException(e.getMessage());
-//        } finally {
-//            closeConnection(connection);
-//        }
-        return new ArrayList<>(0);
+                                                  String orderByColumnName,
+                                                  boolean ascending) throws DAOException {
+
+        Connection connection = null;
+        PreparedStatement prepStatement = null;
+
+        StringBuilder sqlBuilder =
+                new StringBuilder("SELECT books.id, books.title, books.author, " +
+                                  "books.description, books.year, " +
+                                  "books.price, books.isbn, books.count, " +
+                                  "book_categories.name as category_name " +
+                                  "FROM books JOIN book_categories " +
+                                  "ON books.book_categories_id = book_categories.id " +
+                                  "WHERE MATCH(author, title, description) AGAINST(?)");
+
+        if(orderByColumnName != null) {
+            sqlBuilder.append(constructOrderByClause(orderByColumnName, ascending));
+        }
+
+        try {
+            connection = getConnection();
+
+            prepStatement = connection.prepareStatement(sqlBuilder.toString());
+            prepStatement.setString(1, searchString);
+
+            ResultSet resultSet = prepStatement.executeQuery();
+            return extractBooks(resultSet);
+
+        } catch (SQLException e) {
+            throw new DAOException(e.getMessage());
+        } finally {
+            closeConnection(connection);
+        }
     }
 }

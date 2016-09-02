@@ -11,7 +11,8 @@ public interface BookDAO {
     boolean update(Book book) throws DAOException;
     boolean delete(int bookId) throws DAOException;
     List<String> findBookCategories() throws DAOException;
-    List<Book> findBooksBySearchAndOrderBy(String searchString, String columnName) throws DAOException;
+    List<Book> findBooksBySearchAndOrderBy(String searchString, String columnName,
+                                                                boolean ascending) throws DAOException;
     List<Book> findBooksByCategoryAndOrderBy(String bookCategory, String orderByColumnName,
                                                                   boolean ascending) throws DAOException;
 }
