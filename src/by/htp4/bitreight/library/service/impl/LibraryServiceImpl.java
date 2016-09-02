@@ -1,42 +1,60 @@
 package by.htp4.bitreight.library.service.impl;
 
 import by.htp4.bitreight.library.bean.Book;
-import by.htp4.bitreight.library.dao.BookDao;
-import by.htp4.bitreight.library.dao.DaoFactory;
+import by.htp4.bitreight.library.dao.BookDAO;
+import by.htp4.bitreight.library.dao.DAOFactory;
 import by.htp4.bitreight.library.dao.exception.DAOException;
-import by.htp4.bitreight.library.service.BookCategory;
+import by.htp4.bitreight.library.service.BookSortType;
 import by.htp4.bitreight.library.service.LibraryService;
-import by.htp4.bitreight.library.service.SortType;
+import by.htp4.bitreight.library.service.exception.ServiceException;
 
 import java.util.List;
 
 public class LibraryServiceImpl implements LibraryService {
+
     @Override
-    public List<Book> getBooksOfCategoryAndSortBy(String categoryName, String sortName) {
-        BookCategory bookCategory = null;
-        SortType sortType = null;
+    public List<String> getBookCategories() {
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        BookDAO bookDAO = daoFactory.getBookDAO();
+
+        List<String> categories = null;
 
         try {
-            bookCategory = BookCategory.valueOf(categoryName);
-
-        } catch (IllegalArgumentException | NullPointerException e) {
-            bookCategory = BookCategory.ALL;
+            categories = bookDAO.findBookCategories();
+        } catch (DAOException e) {
+            e.printStackTrace();
         }
 
-        try {
-            sortType = SortType.valueOf(sortName);
+        return categories;
+    }
 
-        } catch (IllegalArgumentException | NullPointerException e) {
-            sortType = SortType.NONE;
+    @Override
+    public List<Book> getBooksOfCategoryAndSortBy(String categoryName, String sortType) {
+
+        //check if selected category exists in the database
+        List<String> categories = getBookCategories();
+        if(!categories.contains(categoryName)) {
+            categoryName = null;
         }
 
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        BookDao bookDao = daoFactory.getBookDao();
+        BookSortType bookSortType = validateBookSortType(sortType);
+
+        //check if selected sort type is valid
+//        try {
+//             bookSortType = BookSortType.valueOf(sortType.toUpperCase());
+//
+//        } catch (IllegalArgumentException | NullPointerException e) {
+//            bookSortType = BookSortType.NONE;
+//        }
+
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        BookDAO bookDAO = daoFactory.getBookDAO();
 
         List<Book> books = null;
 
         try {
-            books = bookDao.getBooksOfCategoryAndSortBy(bookCategory, sortType);
+            books = bookDAO.findBooksByCategoryAndOrderBy(categoryName, bookSortType.getFieldName(),
+                                                                        bookSortType.isAscendingOrder());
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -45,7 +63,38 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<Book> searchForBooksAndSortBy(String searchString, String sortName) {
-        return null;
+    public List<Book> searchForBooksAndSortBy(String searchString, String sortType) throws ServiceException {
+        if(searchString == null || searchString.trim().isEmpty()) {
+            throw new ServiceException();
+        }
+
+        BookSortType bookSortType = validateBookSortType(sortType);
+
+        DAOFactory daoFactory = DAOFactory.getInstance();
+        BookDAO bookDAO = daoFactory.getBookDAO();
+
+        List<Book> books = null;
+
+        try {
+            books = bookDAO.findBooksBySearchAndOrderBy(searchString, bookSortType.getFieldName(),
+                                                                      bookSortType.isAscendingOrder());
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
+
+        return books;
+    }
+
+    private BookSortType validateBookSortType(String sortType) {
+        BookSortType bookSortType = null;
+
+        try {
+            bookSortType = BookSortType.valueOf(sortType.toUpperCase());
+
+        } catch (IllegalArgumentException | NullPointerException e) {
+            bookSortType = BookSortType.NONE;
+        }
+
+        return bookSortType;
     }
 }
