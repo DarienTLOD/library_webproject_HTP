@@ -1,12 +1,12 @@
 package by.htp4.bitreight.library.dao.impl;
 
 import by.htp4.bitreight.library.bean.User;
-import by.htp4.bitreight.library.dao.UserDao;
+import by.htp4.bitreight.library.dao.UserDAO;
 import by.htp4.bitreight.library.dao.exception.DAOException;
 
 import java.sql.*;
 
-public class SQLUserDao implements UserDao {
+public class SQLUserDAO implements UserDAO {
 
     private Connection getConnection() throws DAOException {
         Connection connection = null;
@@ -33,17 +33,17 @@ public class SQLUserDao implements UserDao {
     }
 
     @Override
-    public boolean addUser(User user) throws DAOException {
+    public boolean create(User user) throws DAOException {
         return false;
     }
 
     @Override
-    public User getUserByLoginAndPassword(String login, String password) throws DAOException {
+    public User findUserByLoginAndPassword(String login, String password) throws DAOException {
         return null;
     }
 
     @Override
-    public boolean deleteUser(int userId) {
+    public boolean delete(int userId) {
         return false;
     }
 }
