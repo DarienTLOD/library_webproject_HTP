@@ -16,7 +16,6 @@
   },
   "homepage": "https://github.com/bitreight/library_webproject_HTP#readme",
   "devDependencies": {
-    "gulp": "^3.9.1",
     "gulp-cssmin": "^0.1.7",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
