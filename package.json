@@ -15,8 +15,15 @@
     "url": "https://github.com/bitreight/library_webproject_HTP/issues"
   },
   "homepage": "https://github.com/bitreight/library_webproject_HTP#readme",
-  "description": "",
   "devDependencies": {
+    "gulp-cssmin": "^0.1.7",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.0",
+    "gulp-uncss": "^1.0.6"
+  },
+  "dependencies": {
+    "bower": "^1.7.9",
     "gulp": "^3.9.1"
-  }
+  },
+  "description": ""
 }
