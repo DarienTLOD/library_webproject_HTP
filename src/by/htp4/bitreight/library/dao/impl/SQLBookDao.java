@@ -133,6 +133,8 @@ public class SQLBookDAO implements BookDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();//invalid category
+        } finally {
+            closeConnection(connection);
         }
 
         return true;
@@ -154,12 +156,16 @@ public class SQLBookDAO implements BookDAO {
             prepStatement.setInt(1, bookId);
 
             ResultSet resultSet = prepStatement.executeQuery();
-            resultSet.next();
+            if(resultSet.next()) {
+                book = getBookData(resultSet);
+            }
 
-            return getBookData(resultSet);
+            return book;
 
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
+        } finally {
+            closeConnection(connection);
         }
     }
 
@@ -191,7 +197,10 @@ public class SQLBookDAO implements BookDAO {
 
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
+        } finally {
+            closeConnection(connection);
         }
+
         return true;
     }
 
@@ -212,6 +221,8 @@ public class SQLBookDAO implements BookDAO {
 
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
+        } finally {
+            closeConnection(connection);
         }
 
         return true;
@@ -236,8 +247,11 @@ public class SQLBookDAO implements BookDAO {
             }
 
             return categories;
+
         } catch (SQLException e) {
             throw new DAOException(e.getMessage());
+        } finally {
+            closeConnection(connection);
         }
     }
 
