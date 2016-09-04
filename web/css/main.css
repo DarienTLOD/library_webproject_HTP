@@ -160,12 +160,45 @@ div.content-item>div>div.form-group {
     margin-bottom: 15px;
 }
 
-.validate-field {
-    height: 65px;
+.not-validated-field {
+    height: 40px;
 }
 
 .newitem-submit {
     margin-left: 173px;
     font-size: 16px;
     margin-top: 15px;
+}
+
+.view-image {
+    float: left;
+    width: 400px;
+    text-align: center;
+    vertical-align: middle;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+#price {
+    color: orange;
+    margin-top: 0px;
+    margin-right: 50px;
+}
+
+#price:after {
+    content: "$";
+    color: orange;
+}
+
+
+#hide>label, #hide>h5 {
+    text-align: left;
+}
+
+#hide>label{
+    color: gray;
+}
+
+.caption>div>div.btn-info {
+    width: 100%;
 }

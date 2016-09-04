@@ -28,7 +28,7 @@
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Категории
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Детская литература </a></li>
+                                <li><a href="#">Детская литература</a></li>
                                 <li><a href="#">IT литература</a></li>
                                 <li><a href="#">Художественная литература</a></li>
                             </ul>
@@ -45,56 +45,44 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Sign up</a></li>
+                        <li><a href="signup.html">Sign up</a></li>
                         <li><a href="login.html">Login</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <form data-toggle="validator" id="signUpForm" class="custom-form col-md-offset-3 col-sm-offset-3 col-xs-offset-2 form-horizontal">
-            <div class="form-group">
-                <label for="inputLoginSignUp" class="col-sm-2 col-md-2 col-xs-2 control-label">Login</label >
-                <div class="col-sm-4 col-md-4 col-xs-4">
-                    <input type="text" class="form-control" id="inputLoginSignUp" placeholder="Login" required>
-                    <div class="help-block with-errors">Minimum of 4 characters</div>
+        <div role="div" class="header-margin form-horizontal">
+            <div class="view-image">
+                <img src="../web/image/Books/book_2/1.jpg" id="output" />
+            </div>
+            <div class="content content-item">
+                <div class="col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
+                    <h1 id="title">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h1>
+                    <hr>
+                    <h1 id="price">6.99 </h1>
+                    <div class="btn default-height btn-info">Order</div>
+                    <p></p>
+                    <hr>
+                    <h4>Maecenas eu elementum nisl, lacinia viverra urna. Sed suscipit est ut diam congue, vitae dictum metus molestie. Duis ullamcorper sem quis risus sodales malesuada. Pellentesque a enim nec nunc auctor scelerisque sagittis non lorem. Duis convallis a odio lacinia semper. Suspendisse faucibus dui at erat volutpat tempor. Nam odio risus, sollicitudin vitae ullamcorper sit amet, ullamcorper nec erat. Curabitur accumsan, nunc quis dapibus finibus, risus turpis feugiat metus, eu posuere metus risus ut lectus. Donec tincidunt feugiat consectetur. Nullam aliquet nibh ut tristique sollicitudin. Suspendisse eu posuere arcu. Nulla ac leo at sapien scelerisque pharetra. Aenean sapien ligula, volutpat a arcu vel, fermentum aliquam enim. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Curabitur eu lorem condimentum, hendrerit elit semper, rhoncus ex. Pellentesque ac ultrices augue.</h4>
+                    <hr>
+                    <label for="Author" class="col-sm-2 col-md-2 col-xs-2 control-label">Author</label>
+                    <h4 class="col-sm-10 col-md-10 col-xs-10" id="Author">Aliquam iaculis</h4>
+                    <label for="Year" class="col-sm-2 col-md-2 col-xs-2 control-label">Year</label>
+                    <h4 class="col-sm-10 col-md-10 col-xs-10" id="Year">2015</h4>
+                    <hr>
+                    <label for="ISBN" class="col-sm-2 col-md-2 col-xs-2 control-label">ISBN</label>
+                    <h4 class="col-sm-10 col-md-10 col-xs-10" id="ISBN">978-5-699-83316-0</h4>
+                    <label for="Category" class="col-sm-2 col-md-2 col-xs-2 control-label">Category</label>
+                    <h4 class="col-sm-10 col-md-10 col-xs-10" id="Category">IT literature</h4>
+                    <label for="Count" class="col-sm-2 col-md-2 col-xs-2 control-label">Count</label>
+                    <h4 class="col-sm-10 col-md-10 col-xs-10" id="Count">100500</h4>
+                    <hr class="col-md-12">
                 </div>
             </div>
-            <div class="form-group">
-                <label for="inputPassword" class="col-sm-2 col-md-2 col-xs-2 control-label">Password</label>
-                <div class="col-sm-4 col-md-4 col-xs-4">
-                    <input type="password" data-minlength="6" class="form-control" id="inputPassword" placeholder="Password" required>
-                    <div class="help-block with-errors">Minimum of 6 characters</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputPasswordConfirm" class="col-sm-2 col-md-2 col-xs-2 control-label">Confirm password</label>
-                <div class="col-sm-4 col-md-4 col-xs-4">
-                    <input type="password" class="form-control" id="inputPasswordConfirm" data-match="#inputPassword" data-match-error="Please enter the same value again." placeholder="Confirm password" required>
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-             <div class="form-group">
-                <label for="inputName" class="col-sm-2 col-md-2 col-xs-2 control-label">Name</label>
-                <div class="not-validated-field col-sm-4 col-md-4 col-xs-4">
-                    <input type="text" class="form-control" id="inputName" placeholder="Name">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="inputSurname" class="col-sm-2 col-md-2 col-xs-2 control-label">Surname</label>
-                <div class="not-validated-field col-sm-4 col-md-4 col-xs-4">
-                    <input type="text" class="form-control" id="inputSurname" placeholder="Surname">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-xs-offset-2 col-md-offset-2 col-sm-4 col-md-4 col-xs-4">
-                    <button type="submit" class="btn btn-default signup-btn">Sign up</button>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
     <script src="../web/js/vendor/jquery.min.js"></script>
     <script src="../web/js/vendor/bootstrap.min.js"></script>
-    <script src="../web/js/vendor/validator.min.js"></script>
     <script src="../web/js/main.min.js"></script>
 </body>
 
