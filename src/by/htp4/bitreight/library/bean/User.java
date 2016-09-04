@@ -7,7 +7,7 @@ public class User {
     private String password;
     private String name;
     private String surname;
-    private int role;
+    private String role;
 
     public User() {}
 
@@ -51,11 +51,11 @@ public class User {
         this.surname = surname;
     }
 
-    public int getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }
